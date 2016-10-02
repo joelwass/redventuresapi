@@ -20,6 +20,38 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+if (process.env.NODE_ENV != undefined && process.env.NODE_ENV.indexOf('local') != -1) {
+
+  // in local or dev, display swagger api
+  const swaggerJSDoc = require('swagger-jsdoc');
+
+  // swagger definition
+  var swaggerDefinition = {
+    info: {
+      title: 'Red Ventures API Docs',
+      version: '1.0.0',
+      description: 'red-ventures-api Swagger',
+    },
+    host: 'localhost:3001',
+    basePath: '/',
+  };
+
+  var options = {
+    swaggerDefinition: swaggerDefinition,
+    apis: ['./api/controllers/*.js'],
+  };
+
+  var swaggerSpec = swaggerJSDoc(options);
+
+  // serve swagger
+  app.get('/swagger.json', function(req, res) {
+    console.log("remote address: " + req._remoteAddress);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
+  });
+}
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
