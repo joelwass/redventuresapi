@@ -41,7 +41,7 @@ module.exports = function (sequelize, DataTypes) {
 
             findCity: function(body) {
 
-                var params = { where: { 'id': body.id }};
+                var params = { where: { 'id': body }};
                 return City.find(params);
             },
 

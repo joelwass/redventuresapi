@@ -14,8 +14,6 @@ describe('Visit', function () {
         done();
     });
 
-    this.timeout(10000);
-
     var userEmail = 'joel@test.com';
     var userPassword = 'testPass';
     var userFirstName = 'joel';
@@ -83,13 +81,56 @@ describe('Visit', function () {
             .expect('Content-Type', /json/)
             .send(reqBody)
             .end(function (err, res) {
-                var json = JSON.parse(res.text);
-                console.log(json);
-
                 res.status.should.equal(200);
                 var json = JSON.parse(res.text);
                 json.success.should.equal(true);
                 visitid = json.results.id;
+                done();
+            });
+
+    });
+
+    it('should get all cities visited', function (done) {
+
+        request(server)
+            .get('/user/'+userid+'/visits')
+            .set('Auth', auth)
+            .expect('Content-Type', /json/)
+            .end(function (err, res) {
+                res.status.should.equal(200);
+                var json = JSON.parse(res.text);
+                json.success.should.equal(true);
+                json.results[0].should.equal('Chapel Hill');
+                done();
+            });
+
+    });
+
+    it('should get all states visited', function (done) {
+
+        request(server)
+            .get('/user/'+userid+'/visits/states')
+            .set('Auth', auth)
+            .expect('Content-Type', /json/)
+            .end(function (err, res) {
+                res.status.should.equal(200);
+                var json = JSON.parse(res.text);
+                json.success.should.equal(true);
+                json.results[0].should.equal('North Carolina');
+                done();
+            });
+
+    });
+
+    it('should get all cities for state', function (done) {
+
+        request(server)
+            .get('/state/'+2+'/cities')
+            .expect('Content-Type', /json/)
+            .end(function (err, res) {
+                res.status.should.equal(200);
+                var json = JSON.parse(res.text);
+                json.success.should.equal(true);
                 done();
             });
 
@@ -102,9 +143,6 @@ describe('Visit', function () {
             .set('Auth', auth)
             .expect('Content-Type', /json/)
             .end(function (err, res) {
-                var json = JSON.parse(res.text);
-                console.log(json);
-
                 res.status.should.equal(200);
                 var json = JSON.parse(res.text);
                 json.success.should.equal(true);

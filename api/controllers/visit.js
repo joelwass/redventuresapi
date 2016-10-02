@@ -5,6 +5,7 @@
 var helper = require('../helpers');
 var model = require('../models');
 var _ = require('lodash');
+var Promise = require('bluebird');
 
 module.exports = {
 
@@ -33,7 +34,7 @@ module.exports = {
                 }
             })
             .then(function (city) {
-                body.city = city.id;
+                body.city_id = city.dataValues.id;
 
                 return model.State.findStateByAbbreviation(body.state);
             })
@@ -46,7 +47,7 @@ module.exports = {
                 }
             })
             .then(function (state) {
-                body.state = state.id;
+                body.state_id = state.dataValues.id;
 
                 return model.Visit.createNewVisit(body);
             })
@@ -74,13 +75,20 @@ module.exports = {
             .then(function (localVisits) {
 
                 var cityArray = [];
-                var uniqueCities = _.uniqBy(localVisits, function(e) { return e.city_id });
+                var uniqueCities = _.uniq(localVisits, 'id');
                 uniqueCities.forEach(function (currentValue, index, arr) {
-                    cityArray.push(model.City.findCity(currentValue.city_id));
+                    model.City.findCity(currentValue.city_id)
+                        .then(function (city) {
+                            cityArray.push(city.name);
 
-                    if (index + 1 == arr.length) {
-                        return res.status(200).json({ success: true, results: cityArray });
-                    }
+                            if (index + 1 == arr.length) {
+
+                                return res.status(200).json({ success: true, results: cityArray });
+                            }
+                        })
+                        .catch(function (err) {
+                            return Promise.reject(err);
+                        });
                 });
             })
             .catch(function (err) {
@@ -103,13 +111,20 @@ module.exports = {
             .then(function (localVisits) {
 
                 var stateArray = [];
-                var uniqueStates = _.uniqBy(localVisits, function(e) { return e.state_id });
+                var uniqueStates = _.uniq(localVisits, 'id');
                 uniqueStates.forEach(function (currentValue, index, arr) {
-                    stateArray.push(model.State.findState(currentValue.state_id));
+                    model.State.findState(currentValue.state_id)
+                        .then(function (state) {
+                            stateArray.push(state.name);
 
-                    if (index + 1 == arr.length) {
-                        return res.status(200).json({ success: true, results: stateArray });
-                    }
+                            if (index + 1 == arr.length) {
+
+                                return res.status(200).json({ success: true, results: stateArray });
+                            }
+                        })
+                        .catch(function (err) {
+                            return Promise.reject(err);
+                        });
                 });
             })
             .catch(function (err) {
@@ -131,8 +146,8 @@ module.exports = {
         body.user_id = body.user;
         body.id = body.state;
         model.Visit.deleteVisit(body)
-            .then(function (localVisit) {
-                return res.status(200).json({ success: true, results: localVisit });
+            .then(function () {
+                return res.status(200).json({ success: true });
             })
             .catch(function (err) {
                 return res.status(400).json({ success: false, message: err });

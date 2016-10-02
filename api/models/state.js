@@ -3,8 +3,6 @@
  */
 'use strict';
 
-var models = require('../models');
-
 module.exports = function (sequelize, DataTypes) {
     var State = sequelize.define('State', {
         id: {
@@ -27,15 +25,15 @@ module.exports = function (sequelize, DataTypes) {
                 return State.create(body);
             },
 
-            getAllCitiesForState: function(body) {
+            getAllCitiesForState: function(body, model) {
 
-                var params = { where: { 'state_id': body.state_id }};
-                return models.City.find(params);
+                var params = { where: { 'state_id': body.state }};
+                return model.City.find(params);
             },
 
             findState: function(body) {
 
-                var params = { where: { 'id': body.id }};
+                var params = { where: { 'id': body }};
                 return State.find(params);
             },
 
