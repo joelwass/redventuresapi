@@ -5,6 +5,8 @@
 var helper = require('../helpers');
 var model = require('../models');
 var _ = require('lodash');
+var fs = require('fs');
+var parse = require('csv-parse');
 
 module.exports = {
 

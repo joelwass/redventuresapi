@@ -9,6 +9,7 @@ module.exports = function (sequelize, DataTypes) {
     var State = sequelize.define('State', {
         id: {
             type: DataTypes.INTEGER,
+            autoIncrement: true,
             primaryKey: true,
         },
         name: {
@@ -17,7 +18,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         abbreviation: {
             type: DataTypes.STRING,
-            field: 'status',
+            field: 'abbreviation',
         },
     }, {
         classMethods: {
@@ -35,6 +36,12 @@ module.exports = function (sequelize, DataTypes) {
             findState: function(body) {
 
                 var params = { where: { 'id': body.id }};
+                return State.find(params);
+            },
+
+            findStateByAbbreviation: function(body) {
+
+                var params = { where: { 'abbreviation': body }};
                 return State.find(params);
             }
         },

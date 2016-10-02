@@ -6,10 +6,9 @@
 var request = require('supertest');
 var should = require('should');
 var server = require('../app.js');
-var helper = require('../api/helpers');
 
 
-describe('Lux', function () {
+describe('User', function () {
 
     before(function (done) {
         done();

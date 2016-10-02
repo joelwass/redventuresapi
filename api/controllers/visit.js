@@ -10,31 +10,61 @@ module.exports = {
 
     createVisit: function (req, res, next) {
 
-        var body = _.pick(req.body, ['city', 'state']);
+        var body = _.pick(req.body, ['city', 'state']);;
         if (_.keys(body).length != 2
-            || (typeof body.city != 'number')
-            || (typeof body.state != 'number')
-            || (req.query.user != req.user.id)
+            || (typeof body.city != 'string')
+            || (typeof body.state != 'string')
+            || (req.params.user != req.user.id)
         ) {
             return res.status(400).json({ success: false, message: helper.strings.InvalidParameters });
         }
 
         body.user_id = req.user.id;
-        model.Visit.createNewVisit(body)
+        model.City.findCityByName(body.city)
+            .then(function (localCity) {
+                if (localCity != undefined) {
+                    return localCity;
+                } else {
+
+                    var newCityBody = {
+                        name: body.city,
+                    };
+                    return model.City.addNewCity(newCityBody);
+                }
+            })
+            .then(function (city) {
+                body.city = city.id;
+
+                return model.State.findStateByAbbreviation(body.state);
+            })
+            .then(function (localState) {
+                if (localState != undefined) {
+                    return localState;
+                } else {
+
+                     console.log('there was an error finding local state');
+                }
+            })
+            .then(function (state) {
+                body.state = state.id;
+
+                return model.Visit.createNewVisit(body);
+            })
             .then(function (localVisit) {
                 return res.status(200).json({ success: true, results: localVisit });
             })
             .catch(function (err) {
                 return res.status(400).json({ success: false, message: err });
             });
+
     },
 
     getCitiesVisited: function (req, res, next) {
 
-        var body = _.pick(req.query, ['user']);
+        var body = _.pick(req.params, ['user']);
         if (_.keys(body).length != 1
-            || (typeof body.user != 'number')
-            || (req.query.user != req.user.id)
+            || (typeof body.user != 'string')
+            || (req.params.user != req.user.id)
         ) {
             return res.status(400).json({ success: false, message: helper.strings.InvalidParameters });
         }
@@ -60,10 +90,10 @@ module.exports = {
 
     getStatesVisited: function (req, res, next) {
 
-        var body = _.pick(req.query, ['user']);
+        var body = _.pick(req.params, ['user']);
         if (_.keys(body).length != 1
-            || (typeof body.user != 'number')
-            || (req.query.user != req.user.id)
+            || (typeof body.user != 'string')
+            || (req.params.user != req.user.id)
         ) {
             return res.status(400).json({ success: false, message: helper.strings.InvalidParameters });
         }
@@ -89,11 +119,11 @@ module.exports = {
 
     deleteVisit: function (req, res, next) {
 
-        var body = _.pick(req.query, ['user', 'visit']);
+        var body = _.pick(req.params, ['user', 'visit']);
         if (_.keys(body).length != 2
-            || (typeof body.user != 'number')
-            || (typeof body.visit != 'number')
-            || (req.query.user != req.user.id)
+            || (typeof body.user != 'string')
+            || (typeof body.visit != 'string')
+            || (req.params.user != req.user.id)
         ) {
             return res.status(400).json({ success: false, message: helper.strings.InvalidParameters });
         }

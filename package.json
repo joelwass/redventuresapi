@@ -21,6 +21,7 @@
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
+    "csv-parse": "^1.1.7",
     "mocha": "^3.1.0",
     "should": "^11.1.0",
     "supertest": "^2.0.0"

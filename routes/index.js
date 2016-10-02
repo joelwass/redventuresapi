@@ -6,13 +6,13 @@ var middleware = require('./middleware');
 /* GET home page. */
 router.get('/', function(req, res, next) { res.render('index', { title: 'Express' }); });
 
-router.get('/state/{state}/cities', controllers.state.getAllCities);
+router.get('/state/:state/cities', controllers.state.getAllCities);
 
-router.get('/user/{user}/visits/states', middleware.requireAuthentication, controllers.visit.getStatesVisited);
+router.get('/user/:user/visits/states', middleware.requireAuthentication, controllers.visit.getStatesVisited);
 
-router.delete('/user/{user}/visit/{visit}', middleware.requireAuthentication, controllers.visit.deleteVisit);
+router.delete('/user/:user/visit/:visit', middleware.requireAuthentication, controllers.visit.deleteVisit);
 
-router.route('/user/{user}/visits')
+router.route('/user/:user/visits')
     .post(middleware.requireAuthentication, controllers.visit.createVisit)
     .get(middleware.requireAuthentication, controllers.visit.getCitiesVisited);
 
