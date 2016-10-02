@@ -48,14 +48,14 @@ module.exports = function (sequelize, DataTypes) {
                             user = localUser;
                             return bcrypt.compareAsync(body.password, user.password);
                         } else {
-                            return Promise.reject(new MyError(helper.strings.SorryWeCantFindEmail));
+                            return Promise.reject(new Error);
                         }
                     })
                     .then(function (result) {
                         if (result) {
                             return Promise.resolve(user);
                         } else {
-                            return Promise.reject(new MyError(helper.strings.PasswordInvalid));
+                            return Promise.reject(new Error);
                         }
                     })
                     .catch(function (err) {
@@ -68,7 +68,7 @@ module.exports = function (sequelize, DataTypes) {
                 if (token) {
                     return model.Token.create({ token: token, userId: userId });
                 } else {
-                    return Promise.reject(new MyError(helper.strings.InvalidToken));
+                    return Promise.reject(new Error);
                 }
             },
 
@@ -123,7 +123,7 @@ module.exports = function (sequelize, DataTypes) {
                                 if (user) {
                                     return resolve(user);
                                 } else {
-                                    return reject(new MyError(helper.strings.InvalidToken));
+                                    return reject(new Error);
                                 }
                             })
                             .catch(function (err) {
@@ -131,15 +131,7 @@ module.exports = function (sequelize, DataTypes) {
                             });
 
                     } catch (e) {
-                        if (e.message && e.message === 'jwt must be provided') {
-                            return reject(new MyError(helper.strings.InvalidToken));
-                        }
-
-                        if (e.message && e.message === 'invalid signature') {
-                            return reject(new MyError(helper.strings.InvalidToken));
-                        } else {
-                            reject(e);
-                        }
+                        reject(e);
                     }
                 });
             },

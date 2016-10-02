@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var controllers = require('../api/controllers');
+var middleware = require('./middleware');
 
 /* GET home page. */
 router.get('/', function(req, res, next) { res.render('index', { title: 'Express' }); });
@@ -18,7 +19,6 @@ router.route('/user/{user}/visits')
 router.route('/user')
     .get(controllers.user.login)
     .post(controllers.user.createUser)
-    .put(middleware.requireAuthentication, controllers.user.updateUser)
     .delete(middleware.requireAuthentication, controllers.user.deleteUser);
 
 module.exports = router;
