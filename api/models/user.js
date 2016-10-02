@@ -3,9 +3,9 @@
  */
 'use strict';
 
-var models = require('../models');
 var cryptojs = require('crypto-js');
 var jwt = require('jsonwebtoken');
+var bcrypt = require('bcrypt');
 
 module.exports = function (sequelize, DataTypes) {
     var User = sequelize.define('User', {
@@ -46,7 +46,7 @@ module.exports = function (sequelize, DataTypes) {
                     .then(function (localUser) {
                         if (localUser) {
                             user = localUser;
-                            return bcrypt.compareAsync(body.password, user.password);
+                            return (body.password == user.password);
                         } else {
                             return Promise.reject(new Error);
                         }
@@ -110,7 +110,8 @@ module.exports = function (sequelize, DataTypes) {
 
             deleteUser: function(body) {
 
-                return User.destroy(body);
+                var params = { where: { email: body.email, password: body.password }};
+                return User.destroy(params);
             },
 
             findByAccessToken: function (decoded) {

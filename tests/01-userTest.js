@@ -16,122 +16,105 @@ describe('Lux', function () {
     });
 
     var userEmail = 'joel@test.com';
+    var userPassword = 'testPass';
+    var userFirstName = 'joel';
+    var userLastName = 'wasserman';
+    var auth;
 
-    it('should create lux value', function (done) {
+    it('should create user', function (done) {
 
         var reqBody = {
-            user_email: userEmail,
-            lux_value: 100,
-            time_stamp: parseInt(new Date()/1000),
-            outside: false,
+            email: userEmail,
+            password: userPassword,
+            first_name: userFirstName,
+            last_name: userLastName,
         };
 
-        console.log(reqBody);
         request(server)
-            .post('/api/v1/lux/')
+            .post('/user')
             .expect('Content-Type', /json/)
             .send(reqBody)
             .end(function (err, res) {
                 res.status.should.equal(200);
                 var json = JSON.parse(res.text);
                 json.success.should.equal(true);
-                json.data.user_email.should.equal(userEmail);
+                json.results.email.should.equal(userEmail);
                 done();
             });
 
     });
 
-    it('should not create lux value b/c bad params', function (done) {
+    it('should not create user b/c bad params', function (done) {
 
         // params missing outside key
         var reqBody = {
-            user_email: userEmail,
-            lux_value: 200,
-            time_stamp: new Date()/1000,
+            email: userEmail,
         };
 
         request(server)
-            .post('/api/v1/lux/')
+            .post('/user')
             .expect('Content-Type', /json/)
             .send(reqBody)
             .end(function (err, res) {
                 res.status.should.equal(400);
                 var json = JSON.parse(res.text);
                 json.success.should.equal(false);
-                json.message.should.equal(helper.strings.InvalidParameters)
                 done();
             });
 
     });
 
-    it('should create lux value in past', function (done) {
+    it('should login user', function (done) {
 
         var reqBody = {
-            user_email: userEmail,
-            lux_value: 100,
-            time_stamp: new Date()/1000 - 1000000,
-            outside: false,
+            email: userEmail,
+            password: userPassword,
         };
 
         request(server)
-            .post('/api/v1/lux/')
+            .get('/user')
             .expect('Content-Type', /json/)
             .send(reqBody)
             .end(function (err, res) {
                 res.status.should.equal(200);
                 var json = JSON.parse(res.text);
                 json.success.should.equal(true);
-                json.data.user_email.should.equal(userEmail);
+                auth = res.headers.auth;
+                should.exist(auth);
                 done();
             });
 
     });
 
-    it('should get all lux values', function (done) {
-
-        request(server)
-            .get('/api/v1/lux/')
-            .expect('Content-Type', /json/)
-            .end(function (err, res) {
-                res.status.should.equal(200);
-                var json = JSON.parse(res.text);
-                json.success.should.equal(true);
-                json.data.length.should.equal(2);
-                done();
-            });
-
-    });
-
-    it('should get all lux values after date', function (done) {
+    it('should not login user', function (done) {
 
         var reqBody = {
-            time_stamp: new Date()/1000 - 10000,
+            email: userEmail,
+            password: 'badPassword',
         };
 
         request(server)
-            .get('/api/v1/lux/')
+            .get('/user')
             .expect('Content-Type', /json/)
             .send(reqBody)
             .end(function (err, res) {
-                res.status.should.equal(200);
+                res.status.should.equal(400);
                 var json = JSON.parse(res.text);
-                json.success.should.equal(true);
-                json.data.length.should.equal(1);
+                json.success.should.equal(false);
                 done();
             });
 
     });
 
-    it('should delete lux values', function (done) {
+    it('should delete user', function (done) {
 
         var reqBody = {
-            user_email: userEmail,
-            time_stamp_to: new Date()/1000,
-            time_stamp_from: 0,
+            email: userEmail,
+            password: userPassword,
         };
 
         request(server)
-            .delete('/api/v1/lux/')
+            .delete('/user')
             .expect('Content-Type', /json/)
             .send(reqBody)
             .end(function (err, res) {
@@ -140,6 +123,7 @@ describe('Lux', function () {
                 json.success.should.equal(true);
                 done();
             });
+
     });
 
 });

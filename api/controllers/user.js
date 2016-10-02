@@ -22,7 +22,7 @@ module.exports = {
         model.User.authenticate(body)
             .then(function (localUser) {
                 user = localUser;
-                return model.User.createAndSaveRefreshToken(user.id);
+                return model.User.createAndSaveRefreshToken(user.id, model);
             })
             .then(function (localRefreshToken) {
                 refreshToken = localRefreshToken;
@@ -67,7 +67,7 @@ module.exports = {
     deleteUser: function (req, res, next) {
 
         var body = _.pick(req.body, ['email', 'password']);
-        if (_.keys(body).length != 4
+        if (_.keys(body).length != 2
             || (typeof body.email != 'string')
             || (typeof body.password != 'string')
         ) {

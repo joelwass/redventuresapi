@@ -19,6 +19,6 @@ router.route('/user/{user}/visits')
 router.route('/user')
     .get(controllers.user.login)
     .post(controllers.user.createUser)
-    .delete(middleware.requireAuthentication, controllers.user.deleteUser);
+    .delete(controllers.user.deleteUser);
 
 module.exports = router;
