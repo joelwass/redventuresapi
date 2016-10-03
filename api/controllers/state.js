@@ -111,6 +111,66 @@ module.exports = {
             });
     },
 
+    /**
+     * @swagger
+     * /cities:
+     *   get:
+     *     tags:
+     *       - City
+     *     description: This endpoint is used to get all cities within a latitude longitude range
+     *       <table>
+     *       </table>
+     *     consumes:
+     *       - application/json
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *     - name: body
+     *       description: The range for latitude and longitude
+     *         for
+     *       in: body
+     *       schema:
+     *         properties:
+     *           latitude_from:
+     *             type: integer
+     *             required: true
+     *           latitude_to:
+     *             type: integer
+     *             required: true
+     *           longitude_from:
+     *             type: integer
+     *             required: true
+     *           longitude_to:
+     *             type: integer
+     *             required: true
+     *         required:
+     *           - latitude_from
+     *           - latitude_to
+     *           - longitude_from
+     *           - longitude_to
+     *     responses:
+     *       200:
+     *         description: Returns success with the cities within range
+     *         schema:
+     *           properties:
+     *             success:
+     *               type: boolean
+     *             results:
+     *               type: array
+     *               items:
+     *                 $ref: '#/definitions/CityObject'
+     *       400:
+     *         description: An error occured that we are aware of, and we
+     *           return a reason for the error that can be fixed
+     *         schema:
+     *           $ref: '#/definitions/error400ReturnDescription'
+     *       500:
+     *         description: Something we aren't aware of went wrong with our
+     *           server
+     *         schema:
+     *           $ref: '#/definitions/error400ReturnDescription'
+     */
+
     getCitiesInRange: function (req, res, next) {
 
         var body = _.pick(req.body, ['latitude_from', 'latitude_to', 'longitude_from', 'longitude_to']);
