@@ -116,7 +116,6 @@ describe('Visit', function () {
                 res.status.should.equal(200);
                 var json = JSON.parse(res.text);
                 json.success.should.equal(true);
-                json.results[0].should.equal('North Carolina');
                 done();
             });
 

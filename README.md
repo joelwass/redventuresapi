@@ -8,7 +8,9 @@ One thing I'd like to bring up is the ambiguity on what the endpoints should ret
 
 So the logic is a little weird, since i wasn't sure how to handle if someone visited a city that wasn't in the city database (since all they're inputting is a city name). so basically a user can visit a city, and if it isn't a known city, then the api will create a new city in the database with just a name field (not even associated with a state...). Basically the api is kinda wonky and i'd redo it way differently if i could mess with the endpoint structure and required parameters. I'd be happy to elaborate in person or over the phone.
 
-All of my environmental variables are in the .env file, which uses an npm package dotenv to use the variables i initialize in the .env file throughout the project as environmental variables. 
+All of my environmental variables are in the .env file, which uses an npm package dotenv to use the variables i initialize in the .env file throughout the project as environmental variables.
+
+I added in a route '/cities' that gets all cities in a range if you pass in the body the keys latitude_from, latitude_to, longitude_from, and longitude_to. So you can get a list of all cities within an area, regardless of state.
 
 My database schema is as follows:
 

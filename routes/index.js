@@ -8,6 +8,8 @@ router.get('/', function(req, res, next) { res.render('index', { title: 'Express
 
 router.get('/state/:state/cities', controllers.state.getAllCities);
 
+router.get('/cities', controllers.state.getCitiesInRange);
+
 router.get('/user/:user/visits/states', middleware.requireAuthentication, controllers.visit.getStatesVisited);
 
 router.delete('/user/:user/visit/:visit', middleware.requireAuthentication, controllers.visit.deleteVisit);

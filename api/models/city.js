@@ -49,6 +49,13 @@ module.exports = function (sequelize, DataTypes) {
 
                 var params = { where: { 'name': body }};
                 return City.find(params);
+            },
+
+            getAllCitiesInRange: function (body) {
+
+                var params = { where: { 'latitude': { $gte: body.latitude_from, $lte: body.latitude_to },
+                    'longitude': { $gte: body.longitude_from, $lte: body.longitude_to }}};
+                return City.find(params);
             }
         },
         instanceMethods: {

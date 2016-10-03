@@ -114,7 +114,10 @@ module.exports = {
                     return localState;
                 } else {
 
-                     console.log('there was an error finding local state');
+                    var newStateBody = {
+                        abbreviation: body.state,
+                    };
+                    return model.State.addNewState(newStateBody);
                 }
             })
             .then(function (state) {

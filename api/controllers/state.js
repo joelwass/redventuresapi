@@ -101,9 +101,29 @@ module.exports = {
             return res.status(400).json({ success: false, message: helper.strings.InvalidParameters });
         }
 
-        console.log(body);
         body.state = parseInt(body.state);
         model.State.getAllCitiesForState(body, model)
+            .then(function (localResults) {
+                return res.status(200).json({ success: true, results: localResults });
+            })
+            .catch(function (err) {
+                return res.status(400).json({ success: false, message: err });
+            });
+    },
+
+    getCitiesInRange: function (req, res, next) {
+
+        var body = _.pick(req.body, ['latitude_from', 'latitude_to', 'longitude_from', 'longitude_to']);
+        if (_.keys(body).length != 4
+            || (typeof body.latitude_to != 'number')
+            || (typeof body.longitude_to != 'number')
+            || (typeof body.latitude_from != 'number')
+            || (typeof body.longitude_from != 'number')
+        ) {
+            return res.status(400).json({ success: false, message: helper.strings.InvalidParameters });
+        }
+
+        model.City.getAllCitiesInRange(body)
             .then(function (localResults) {
                 return res.status(200).json({ success: true, results: localResults });
             })
